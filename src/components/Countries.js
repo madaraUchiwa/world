@@ -4,20 +4,39 @@ import Card from "./Card";
 
 const Countries = () => {
   const [data, setData] = useState([]);
+  const [sorted, setSorted] = useState([]);
+  const [playOnce, SetPlayOnce] = useState('true');
   const [rangeValue, setRangeValue] = useState(40);
   const [selectedRadio, setSelectedRadio] = useState("");
   
   const radios = ["Africa", "America", "Asia", "Europe", "Oceania"];
 
   useEffect(() => {
-    axios
+    if(playOnce) {
+
+       axios
       .get(
         "https://restcountries.eu/rest/v2/all?fields=name;population;region;capital;flag"
       )
       .then((res) => {
         setData(res.data);
+        SetPlayOnce(false);
       });
-  }, []);
+
+
+    }
+   
+      const sortedCountry = () => {
+        const countryObj = Object.keys(data).map((i) => data[i]);
+        const sortedArray = countryObj.sort((a, b) => {
+          return b.population - a.population;
+        });
+        sortedArray.length = rangeValue;
+        setSorted(sortedArray);
+      }
+
+      sortedCountry();
+  }, [data, rangeValue, playOnce]);
 
   return (
     <div className="countries">
@@ -52,9 +71,8 @@ const Countries = () => {
         )}
       </div>
       <ul className="countries-list">
-        {data
+        {sorted
           .filter((country) => country.region.includes(selectedRadio))
-          .sort((a, b) => b.population - a.population)
           .map((country) => (
             <Card country={country} key={country.name} />
           ))}
