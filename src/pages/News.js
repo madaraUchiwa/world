@@ -27,7 +27,7 @@ const News = () => {
       <Logo />
       <h1>New</h1>
 
-      <form>
+      <form onSubmit>
         <input type="text" placeholder="Nom" />
         <textarea placeholder="Message" />
         <input type="submit" value="Envoyer" />
